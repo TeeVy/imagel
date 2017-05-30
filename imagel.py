@@ -1,8 +1,10 @@
 from tkinter import *
+from tkinter.ttk import *
 import tkinter.filedialog
 import cv2
 import glob
 import os
+import webbrowser
 
 def ParDossier():
   directory = tkinter.filedialog.askdirectory(title='Choisir un dossier à traiter', initialdir='.')
@@ -56,16 +58,33 @@ def ParFichiers():
     print('\nOpération(s) terminée(s) !')
   else:
     print('\nAucun fichier sélectionné')
-    
-window = Tk()
-window.title("Imagel")
 
+def Apropos():
+  webbrowser.open("https://github.com/TeeVy/imagel")
+    
 try:
   os.mkdir('gel')
   print('Création du dossier "gel" réussie !')
 except OSError:
   print('Le dossier "gel" existe déjà, passage direct à l\'étape suivante.')
   pass
+
+window = Tk()
+window.title("Imagel")
+
+M = Menu(window)
+
+MenuFichier = Menu(M,tearoff=0, activebackground='#91c9f7', activeforeground='black')
+MenuFichier.add_command(label="Choisir un dossier à traiter",command=ParDossier)
+MenuFichier.add_command(label="Choisir un ou des fichiers à traiter",command=ParFichiers)
+MenuFichier.add_command(label="Quitter",command=window.destroy)
+M.add_cascade(label="Fichier", menu=MenuFichier)
+
+MenuAide = Menu(M,tearoff=0, activebackground='#91c9f7', activeforeground='black')
+MenuAide.add_command(label="À propos",command= Apropos)
+M.add_cascade(label="Aide", menu=MenuAide)
+
+window.config(menu=M)
 
 LF1 = LabelFrame(window, text='Par Dossier')
 LF1.pack(fill='both', expand='yes', padx=10, pady=10)
