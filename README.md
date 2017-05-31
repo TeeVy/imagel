@@ -12,6 +12,7 @@ A simple Python script which allows to make a screenshot on the very last frame 
 ### Dependencies required
 * [Python 3](https://www.python.org/)
 * [Open CV](https://github.com/opencv/opencv)
+* [Numpy](http://www.numpy.org/)
 
 ### Notes :
 * The script was tested and designed only for **Windows**, I will not do the support for MacOs and Linux.
