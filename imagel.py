@@ -71,6 +71,8 @@ except OSError:
 
 window = Tk()
 window.title("Imagel")
+window.resizable(width=False, height=False)
+window.iconbitmap('img/imagel_icon.ico')
 
 M = Menu(window)
 
@@ -86,8 +88,14 @@ M.add_cascade(label="Aide", menu=MenuAide)
 
 window.config(menu=M)
 
+logo = PhotoImage(file="img/imagel_logo.png")
+
+canvas = Canvas(window,width=317, height=98)
+canvas.create_image(0, 0, anchor=NW, image=logo)
+canvas.pack(pady=10)
+
 LF1 = LabelFrame(window, text='Par Dossier')
-LF1.pack(fill='both', expand='yes', padx=10, pady=10)
+LF1.pack(fill='both', expand='yes', padx=10)
 
 L1 = Label(LF1, text='Choisissez le dossier à traiter')
 L1.pack(padx=10, pady=10, side = LEFT)
