@@ -6,9 +6,22 @@ import glob
 import os
 import webbrowser
 import configparser
-import subprocess
+import clipboard
 
+#Vérification de config.ini
 config = configparser.ConfigParser()
+
+try:
+  with open('config.ini'):
+    print('Le fichier "config.ini" a été chargé avec succès !')
+except IOError:
+  print('Le fichier "config.ini" est introuvable, Imagel va automatiquement en créer un...')
+  config['default'] = {'destination': ''}
+  config['custom'] = {'destination': ''}
+  with open('config.ini', 'w') as configfile:
+    config.write(configfile)
+  print('Le fichier "config.ini" a été créé avec succès !')
+
 config.read('config.ini')
 destination = config['custom']['destination']
 
@@ -20,7 +33,18 @@ if destination == '':
   with open('config.ini', 'w') as configfile:
     config.write(configfile)
 
-print('Bienvenue dans Imagel, la destination de sortie se trouve actuellement dans :\n' + destination)
+destination_check = os.path.isdir(destination)
+
+if destination_check == False:
+  print('\nErreur ! Le dossier de sortie est introuvable !')
+  print('La destination a été remise par défaut')
+  destination = config['default']['destination']
+  config.set('custom','destination',destination)
+  with open('config.ini', 'w') as configfile:
+    config.write(configfile)
+
+#Vérifications terminées, on peut désormais lancer le script.
+print('\nBienvenue dans Imagel, la destination de sortie se trouve actuellement dans :\n' + destination)
 
 def Destination():
   global destination
@@ -37,6 +61,15 @@ def Destination():
     T_destination.config(state=DISABLED)
   else:
     print('\nChangement de la destination de sortie annulée')
+
+def PopCopy(event):
+  T_destination.focus_force()
+  T_destination.tag_add('sel', '1.0', 'end')
+  M_copy.post(event.x_root, event.y_root)
+
+def Copy(destination):
+  clipboard.copy(destination)
+  print('\nChemin du dossier de sortie copié dans le presse-papier\n' + destination)
 
 def ParDossier():
   directory = tkinter.filedialog.askdirectory(title='Choisir un dossier à traiter', initialdir='.')
@@ -63,7 +96,7 @@ def ParDossier():
       gel = filename[0:-4]
       cv2.imwrite(destination + gel + '.jpg', frame)
     print('\nOpérations terminées !')
-    print('Dossier de sortie : ' + destination)
+    Copy(destination)
   else:
     print('\nAucun dossier sélectionné')
 
@@ -90,7 +123,7 @@ def ParFichiers():
       print(destination + gel)
       cv2.imwrite(destination + gel + '.jpg', frame)
     print('\nOpération(s) terminée(s) !')
-    print('Dossier de sortie : ' + destination)
+    Copy(destination)
   else:
     print('\nAucun fichier sélectionné')
 
@@ -136,6 +169,11 @@ L_destination.pack(pady=5, padx=10, side = LEFT)
 
 B_destination = Button(LF_settings, text = 'Parcourir...', command = Destination)
 B_destination.pack(pady=5, padx=10, side = RIGHT)
+
+#Copy
+M_copy = Menu(T_destination, tearoff=0)
+M_copy.add_command(label="Copier", accelerator="Ctrl+C", command = lambda: Copy(destination))
+T_destination.bind("<Button-3>", PopCopy)
 
 #Par dossier
 LF1 = LabelFrame(window, text='Par dossier')
