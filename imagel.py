@@ -1,20 +1,16 @@
 from tkinter import *
 from tkinter.ttk import *
-from tkinter.messagebox import *
 import tkinter.filedialog
 import cv2
 import glob
 import os
 import webbrowser
 import configparser
+import subprocess
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-gel = config['custom']['gel']
 destination = config['custom']['destination']
-
-if gel == '':
-  gel = config['default']['gel']
 
 if destination == '':
   destination = os.getcwd() + '/'
@@ -24,15 +20,23 @@ if destination == '':
   with open('config.ini', 'w') as configfile:
     config.write(configfile)
 
+print('Bienvenue dans Imagel, la destination de sortie se trouve actuellement dans :\n' + destination)
+
 def Destination():
-  destination = tkinter.filedialog.askdirectory(title='Choisir un dossier à traiter', initialdir='.')
-  if destination != '': 
-    config.set('custom','destination',destination + '/')
+  global destination
+  new_destination = tkinter.filedialog.askdirectory(title='Changer la destination de sortie', initialdir=destination)
+  if new_destination != '':
+    destination = new_destination + '/'
+    config.set('custom','destination',destination)
     with open('config.ini', 'w') as configfile:
       config.write(configfile)
-    print('Destination de sortie modifiée : ' + destination)
+    print('\nDestination de sortie modifiée : \n' + destination)
+    T_destination.config(state=NORMAL)
+    T_destination.delete(1.0, END)
+    T_destination.insert(END, destination)
+    T_destination.config(state=DISABLED)
   else:
-    print('Changement de la destination de sortie annulée')
+    print('\nChangement de la destination de sortie annulée')
 
 def ParDossier():
   directory = tkinter.filedialog.askdirectory(title='Choisir un dossier à traiter', initialdir='.')
@@ -56,9 +60,10 @@ def ParDossier():
         cap.set(1,length);
         ret, frame = cap.read()
         print ('Capture de l\'image', length, ':', ret)
-      frame_gel = filename[0:-4]
-      cv2.imwrite(destination + gel + '/%s.jpg' % frame_gel, frame)
+      gel = filename[0:-4]
+      cv2.imwrite(destination + gel + '.jpg', frame)
     print('\nOpérations terminées !')
+    print('Dossier de sortie : ' + destination)
   else:
     print('\nAucun dossier sélectionné')
 
@@ -81,22 +86,16 @@ def ParFichiers():
         cap.set(1,length);
         ret, frame = cap.read()
         print ('Capture de l\'image', length, ':', ret)
-      frame_gel = filename[0:-4]      
-      cv2.imwrite(destination + gel + '/%s.jpg' % frame_gel, frame)
+      gel = filename[0:-4]
+      print(destination + gel)
+      cv2.imwrite(destination + gel + '.jpg', frame)
     print('\nOpération(s) terminée(s) !')
+    print('Dossier de sortie : ' + destination)
   else:
     print('\nAucun fichier sélectionné')
 
 def Github():
   webbrowser.open("https://github.com/TeeVy/imagel")
-    
-try:
-  os.mkdir(destination + gel)
-  print('Création du dossier "'+ gel +'" réussie !')
-  print('il a été placé dans ' + destination)
-except OSError:
-  print('Le dossier de sortie "'+ gel +'" existe déjà, passage direct à l\'étape suivante.')
-  pass
 
 window = Tk()
 window.title('Imagel')
@@ -123,38 +122,20 @@ canvas = Canvas(window,width=317, height=98)
 canvas.create_image(0, 0, anchor=NW, image=logo)
 canvas.pack()
 
-#Par amètres
-F_settings = LabelFrame(window, text='Nom & Destination du dossier de sortie')
-F_settings.pack(fill='both', expand='yes', padx=10, pady=5)
+#Par amètres (la bonne blague)
+LF_settings = LabelFrame(window, text='Paramètres')
+LF_settings.pack(fill='both', expand='yes', padx=10, pady=5)
 
-F_info = Frame(F_settings)
-F_info.pack(pady=5)
+T_destination = Text(LF_settings, height=1, width=45, wrap='none', font='Arial, 8', relief = GROOVE, borderwidth=2)
+T_destination.pack(pady=5, padx=10)
+T_destination.insert(END, destination)
+T_destination.config(state=DISABLED)
 
-L_info_foldername = Label(F_info, text='Le dossier de sortie "' + gel + '" se trouve actuellement dans :', wraplength=286)
-L_info_foldername.pack()
+L_destination = Label(LF_settings, text='Destination de sortie :')
+L_destination.pack(pady=5, padx=10, side = LEFT)
 
-L_info_destination = Label(F_info, text=destination, wraplength=286)
-L_info_destination.pack()
-
-F_left_settings = Frame(F_settings)
-F_left_settings.pack(padx=10, pady=5, side = LEFT)
-
-L_foldername = Label(F_left_settings, text='Nom :', width=11)
-L_foldername.pack(pady=5)
-
-L_destination = Label(F_left_settings, text='Destination :', width=11)
-L_destination.pack(pady=5)
-
-F_right_settings = Frame(F_settings)
-F_right_settings.pack(padx=10, pady=5, side = RIGHT)
-
-foldername = StringVar()
-foldername.set(gel)
-E_foldername = Entry(F_right_settings, textvariable=foldername, width=11)
-E_foldername.pack(pady=5)
-
-B_destination = Button(F_right_settings, text = 'Parcourir...', width=11, command = Destination)
-B_destination.pack(pady=5)
+B_destination = Button(LF_settings, text = 'Parcourir...', command = Destination)
+B_destination.pack(pady=5, padx=10, side = RIGHT)
 
 #Par dossier
 LF1 = LabelFrame(window, text='Par dossier')
@@ -163,7 +144,7 @@ LF1.pack(fill='both', expand='yes', padx=10, pady=5)
 L1 = Label(LF1, text='Choisissez le dossier à traiter')
 L1.pack(padx=10, pady=10, side = LEFT)
 
-Bouton1 = Button(LF1, text = 'Parcourir...', width=11, command = ParDossier)
+Bouton1 = Button(LF1, text = 'Parcourir...', command = ParDossier)
 Bouton1.pack(padx=10, pady=10, side = RIGHT)
 
 #Par fichier(s)
@@ -173,7 +154,7 @@ LF2.pack(fill='both', expand='yes', padx=10, pady=5)
 L2 = Label(LF2, text='Choisissez le(s) fichier(s) à traiter')
 L2.pack(padx=10, pady=10, side = LEFT)
 
-Bouton2 = Button(LF2, text = 'Parcourir...', width=11, command = ParFichiers)
+Bouton2 = Button(LF2, text = 'Parcourir...', command = ParFichiers)
 Bouton2.pack(padx=10, pady=10, side = RIGHT)
 
 #Fenêtre
