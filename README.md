@@ -4,7 +4,7 @@ A simple Python script which allows to make a screenshot on the very last frame 
 ## Download
 * v**2.1.0-alpha** : https://github.com/TeeVy/imagel/releases/tag/2.1.0-alpha
 
-## Status (v2.7.0-alpha)
+## Status (v2.8.1-alpha)
 
 ### Lastest commits on imagel.py
 * https://github.com/TeeVy/imagel/commits/master/imagel.py
