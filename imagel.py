@@ -98,8 +98,11 @@ def ParDossier():
           cap.set(1,length);
           ret, frame = cap.read()
           print ('Capture de l\'image', length, ':', ret)
-        gel = filename[0:-4]
-        cv2.imwrite(destination + gel + '.jpg', frame)
+        gel = filename[0:-4] + '.jpg'
+        script_path = os.getcwd()
+        os.chdir(destination)
+        cv2.imwrite(gel, frame)
+        os.chdir(script_path)
       print('\nOpérations terminées !')
       Copy(destination)
     else:
@@ -126,9 +129,11 @@ def ParFichiers():
           cap.set(1,length);
           ret, frame = cap.read()
           print ('Capture de l\'image', length, ':', ret)
-        gel = filename[0:-4]
-        print(destination + gel)
-        cv2.imwrite(destination + gel + '.jpg', frame)
+        gel = filename[0:-4] + '.jpg'
+        script_path = os.getcwd()
+        os.chdir(destination)
+        cv2.imwrite(gel, frame)
+        os.chdir(script_path)
       print('\nOpération(s) terminée(s) !')
       Copy(destination)
     else:
@@ -158,7 +163,7 @@ window.config(menu=M)
 
 logo = PhotoImage(file='img/imagel_logo.png')
 
-canvas = Canvas(window,width=317, height=98)
+canvas = Canvas(window,width=317, height=116)
 canvas.create_image(0, 0, anchor=NW, image=logo)
 canvas.pack()
 
