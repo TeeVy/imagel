@@ -10,6 +10,8 @@ import configparser
 import clipboard
 import subprocess
 
+version ='2.10.2-alpha'
+
 def Destination():
   global destination
   new_destination = tkinter.filedialog.askdirectory(title='Changer la destination de sortie', initialdir=destination)
@@ -76,9 +78,11 @@ def Copy(destination):
   print('\nChemin du dossier de sortie copié dans le presse-papier\n' + destination)
 
 def OpenFolder():
-  open_destination = str.replace(destination, '/', '\\')
-  subprocess.Popen('explorer ' + open_destination)
-
+  DestinationCheck(destination)
+  if destination_check == True:
+    open_destination = str.replace(destination, '/', '\\')
+    subprocess.Popen('explorer ' + open_destination)
+    
 def ParDossier():
   DestinationCheck(destination)
   if destination_check == True:
@@ -145,31 +149,57 @@ def ParFichiers():
       print('\nAucun fichier sélectionné')
 
 def Github():
-  webbrowser.open("https://github.com/TeeVy/imagel")
+  webbrowser.open('https://github.com/TeeVy/imagel')
 
+def Donate():
+  webbrowser.open('https://www.paypal.me/RobinCarlo')
+
+def About():
+  W_about = Toplevel()
+  W_about.iconbitmap('img/imagel_icon.ico')
+  canvas = Canvas(W_about, width = 317, height = 126)
+  canvas.pack()
+  logo = PhotoImage(file = 'img/imagel_logo.png')
+  canvas.create_image(0, 20, image = logo, anchor = NW)
+  canvas.logo = logo
+  L_version = Label(W_about, text='Version ' + version, font='Arial 9 bold')
+  L_version.pack(pady=5)
+  F_about = Frame(W_about)
+  F_about.pack(pady=10)
+  B_git = Button(F_about, text='Github', command = Github)
+  B_git.pack(side = LEFT, padx=5)
+  B_donate = Button(F_about, text='Faire un don', command = Donate)
+  B_donate.pack(side = RIGHT, padx=5)
+  
+#Fenêtre
 window = Tk()
 window.title('Imagel')
 window.resizable(width=False, height=False)
 window.iconbitmap('img/imagel_icon.ico')
 
+#Menu
 M = Menu(window)
 
 MenuFichier = Menu(M,tearoff=0, activebackground='#91c9f7', activeforeground='black')
 MenuFichier.add_command(label='Choisir un dossier à traiter',command=ParDossier)
 MenuFichier.add_command(label='Choisir un ou des fichiers à traiter',command=ParFichiers)
+MenuFichier.add_command(label='Copier le chemin du dossier de sortie',command=lambda: Copy(destination))
 MenuFichier.add_command(label='Quitter',command=window.destroy)
 M.add_cascade(label='Fichier', menu=MenuFichier)
 
 MenuApropos = Menu(M,tearoff=0, activebackground='#91c9f7', activeforeground='black')
-MenuApropos.add_command(label='Github',command= Github)
+MenuApropos.add_command(label='À propos', command = About)
+MenuApropos.add_command(label='Github', command = Github)
+MenuApropos.add_command(label='Faire un don', command = Donate)
 M.add_cascade(label='À propos', menu=MenuApropos)
 
 window.config(menu=M)
 
+#Logo
 logo = PhotoImage(file='img/imagel_logo.png')
 
-canvas = Canvas(window, width=317, height=116)
-canvas.create_image(0, 0, anchor=NW, image=logo)
+canvas = Canvas(window, width=317, height=126)
+canvas.create_image(0, 20, anchor=NW, image=logo)
 canvas.pack()
 
 #Par amètres (la bonne blague)
@@ -228,5 +258,5 @@ L2.pack(padx=10, pady=10, side = LEFT)
 Bouton2 = Button(LF2, text = 'Parcourir...', command = ParFichiers)
 Bouton2.pack(padx=10, pady=10, side = RIGHT)
 
-#Fenêtre
+#Fenêtre loop
 window.mainloop()
