@@ -79,6 +79,8 @@ def ParDossier():
   if destination_check == True:
     directory = tkinter.filedialog.askdirectory(title='Choisir un dossier à traiter', initialdir='.')
     if directory != '':
+      script_path = os.getcwd()
+      os.chdir(destination)
       print('\nDossier sélectionné :', directory)
       files = glob.glob(directory + '/*.mov') + glob.glob(directory + '/*.mp4')
       for filename in files:
@@ -99,12 +101,10 @@ def ParDossier():
           ret, frame = cap.read()
           print ('Capture de l\'image', length, ':', ret)
         gel = filename[0:-4] + '.jpg'
-        script_path = os.getcwd()
-        os.chdir(destination)
         cv2.imwrite(gel, frame)
-        os.chdir(script_path)
       print('\nOpérations terminées !')
       Copy(destination)
+      os.chdir(script_path)
     else:
       print('\nAucun dossier sélectionné')
 
@@ -113,6 +113,8 @@ def ParFichiers():
   if destination_check == True:
     files = tkinter.filedialog.askopenfilenames(title='Choisir un ou des fichiers à traiter', filetypes=[('Vidéos','*.mov;*.mp4')], initialdir='.')
     if files !='':
+      script_path = os.getcwd()
+      os.chdir(destination)
       for filename in files:
         file = str.join('', (filename))
         filename = os.path.basename(file)
@@ -130,12 +132,10 @@ def ParFichiers():
           ret, frame = cap.read()
           print ('Capture de l\'image', length, ':', ret)
         gel = filename[0:-4] + '.jpg'
-        script_path = os.getcwd()
-        os.chdir(destination)
         cv2.imwrite(gel, frame)
-        os.chdir(script_path)
       print('\nOpération(s) terminée(s) !')
       Copy(destination)
+      os.chdir(script_path)
     else:
       print('\nAucun fichier sélectionné')
 
