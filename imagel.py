@@ -8,6 +8,7 @@ import os
 import webbrowser
 import configparser
 import clipboard
+import subprocess
 
 def Destination():
   global destination
@@ -73,6 +74,10 @@ def PopCopy(event):
 def Copy(destination):
   clipboard.copy(destination)
   print('\nChemin du dossier de sortie copié dans le presse-papier\n' + destination)
+
+def OpenFolder():
+  open_destination = str.replace(destination, '/', '\\')
+  subprocess.Popen('explorer ' + open_destination)
 
 def ParDossier():
   DestinationCheck(destination)
@@ -163,24 +168,40 @@ window.config(menu=M)
 
 logo = PhotoImage(file='img/imagel_logo.png')
 
-canvas = Canvas(window,width=317, height=116)
+canvas = Canvas(window, width=317, height=116)
 canvas.create_image(0, 0, anchor=NW, image=logo)
 canvas.pack()
 
 #Par amètres (la bonne blague)
 LF_settings = LabelFrame(window, text='Paramètres')
-LF_settings.pack(fill='both', expand='yes', padx=10, pady=5)
+LF_settings.pack(fill='both', expand='yes', padx=10, pady=10)
 
-T_destination = Text(LF_settings, height=1, width=45, wrap='none', font='Arial, 8', relief = GROOVE, borderwidth=2)
-T_destination.pack(pady=5, padx=10)
+F_settings = Frame(LF_settings)
+F_settings.pack(pady=5)
+
+F_settings_L1 = Frame(F_settings, width = 277, height=24)
+F_settings_L1.pack(pady=5)
+F_settings_L1.pack_propagate(0)
+
+F_settings_L2 = Frame(F_settings, width = 277, height=25)
+F_settings_L2.pack(pady=5)
+F_settings_L2.pack_propagate(0)
+
+T_destination = Text(F_settings_L1, height=1, width=40, wrap='none', font='Arial, 8', relief = GROOVE, borderwidth=2)
+T_destination.pack(padx=2, side = LEFT)
 T_destination.insert(END, destination)
 T_destination.config(state=DISABLED)
 
-L_destination = Label(LF_settings, text='Destination de sortie :')
-L_destination.pack(pady=5, padx=10, side = LEFT)
+open_gif = PhotoImage(file = 'img/open.gif')
 
-B_destination = Button(LF_settings, text = 'Parcourir...', command = Destination)
-B_destination.pack(pady=5, padx=10, side = RIGHT)
+B_open = Button(F_settings_L1, image = open_gif, command = OpenFolder)
+B_open.pack(side = RIGHT)
+
+L_destination = Label(F_settings_L2, text='Destination de sortie')
+L_destination.pack(side = LEFT)
+
+B_destination = Button(F_settings_L2, text = 'Parcourir...', command = Destination)
+B_destination.pack(side = RIGHT)
 
 #Copy
 M_copy = Menu(T_destination, tearoff=0)
