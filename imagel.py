@@ -10,7 +10,7 @@ import configparser
 import clipboard
 import subprocess
 
-version ='2.10.2-alpha'
+version ='1.0.0-release'
 
 def Destination():
   global destination
@@ -154,6 +154,12 @@ def Github():
 def Donate():
   webbrowser.open('https://www.paypal.me/RobinCarlo')
 
+def Twitter():
+  webbrowser.open('https://www.twitter.com/robinowned')
+
+def Website():
+  webbrowser.open('http://robincarlo.fr')
+
 def About():
   W_about = Toplevel()
   W_about.iconbitmap('img/imagel_icon.ico')
@@ -166,10 +172,14 @@ def About():
   L_version.pack(pady=5)
   F_about = Frame(W_about)
   F_about.pack(pady=10)
-  B_git = Button(F_about, text='Github', command = Github)
-  B_git.pack(side = LEFT, padx=5)
   B_donate = Button(F_about, text='Faire un don', command = Donate)
-  B_donate.pack(side = RIGHT, padx=5)
+  B_donate.pack(side = LEFT, padx=2)
+  B_website = Button(F_about, text='Site Web', command = Website)
+  B_website.pack(side = LEFT, padx=2)
+  B_twitter = Button(F_about, text='Twitter', command = Twitter)
+  B_twitter.pack(side = LEFT, padx=2)
+  B_git = Button(F_about, text='Github', command = Github)
+  B_git.pack(side = LEFT, padx=2)
   
 #Fenêtre
 window = Tk()
@@ -184,13 +194,17 @@ MenuFichier = Menu(M,tearoff=0, activebackground='#91c9f7', activeforeground='bl
 MenuFichier.add_command(label='Choisir un dossier à traiter',command=ParDossier)
 MenuFichier.add_command(label='Choisir un ou des fichiers à traiter',command=ParFichiers)
 MenuFichier.add_command(label='Copier le chemin du dossier de sortie',command=lambda: Copy(destination))
+MenuFichier.add_separator()
 MenuFichier.add_command(label='Quitter',command=window.destroy)
 M.add_cascade(label='Fichier', menu=MenuFichier)
 
 MenuApropos = Menu(M,tearoff=0, activebackground='#91c9f7', activeforeground='black')
 MenuApropos.add_command(label='À propos', command = About)
-MenuApropos.add_command(label='Github', command = Github)
 MenuApropos.add_command(label='Faire un don', command = Donate)
+MenuApropos.add_separator()
+MenuApropos.add_command(label='Site Web', command = Website)
+MenuApropos.add_command(label='Twitter', command = Twitter)
+MenuApropos.add_command(label='Github', command = Github)
 M.add_cascade(label='À propos', menu=MenuApropos)
 
 window.config(menu=M)
