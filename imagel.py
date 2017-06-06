@@ -10,7 +10,7 @@ import configparser
 import clipboard
 import subprocess
 
-version ='1.0.0-release'
+version ='1.0.2-release'
 
 def Destination():
   global destination
@@ -66,7 +66,7 @@ def DestinationCheck(destination):
 DestinationCheck(destination)
 
 #Vérifications terminées, on peut désormais lancer le script
-print('\nBienvenue dans Imagel, la destination de sortie se trouve actuellement dans :\n' + destination)
+print('\nBienvenue dans Imagel ' + version + ',\nla destination de sortie se trouve actuellement dans :\n' + destination)
 
 def PopCopy(event):
   T_destination.focus_force()
@@ -193,6 +193,7 @@ M = Menu(window)
 MenuFichier = Menu(M,tearoff=0, activebackground='#91c9f7', activeforeground='black')
 MenuFichier.add_command(label='Choisir un dossier à traiter',command=ParDossier)
 MenuFichier.add_command(label='Choisir un ou des fichiers à traiter',command=ParFichiers)
+MenuFichier.add_separator()
 MenuFichier.add_command(label='Copier le chemin du dossier de sortie',command=lambda: Copy(destination))
 MenuFichier.add_separator()
 MenuFichier.add_command(label='Quitter',command=window.destroy)
@@ -200,8 +201,8 @@ M.add_cascade(label='Fichier', menu=MenuFichier)
 
 MenuApropos = Menu(M,tearoff=0, activebackground='#91c9f7', activeforeground='black')
 MenuApropos.add_command(label='À propos', command = About)
-MenuApropos.add_command(label='Faire un don', command = Donate)
 MenuApropos.add_separator()
+MenuApropos.add_command(label='Faire un don', command = Donate)
 MenuApropos.add_command(label='Site Web', command = Website)
 MenuApropos.add_command(label='Twitter', command = Twitter)
 MenuApropos.add_command(label='Github', command = Github)
@@ -218,27 +219,31 @@ canvas.pack()
 
 #Par amètres (la bonne blague)
 LF_settings = LabelFrame(window, text='Destination de sortie')
-LF_settings.pack(fill='both', expand='yes', padx=10, pady=10)
+LF_settings.pack(fill='both', expand='yes', padx=10, pady=5)
 
 F_settings = Frame(LF_settings)
-F_settings.pack(pady=5)
+F_settings.pack(pady=10, padx=10)
 
-F_settings = Frame(F_settings, width = 277, height=24)
-F_settings.pack(pady=5)
-F_settings.pack_propagate(0)
+F_settings_L1 = Frame(F_settings, width = 275, height = 25)
+F_settings_L1.pack()
+F_settings_L1.pack_propagate(0)
 
-T_destination = Text(F_settings, height=1, width=30, wrap='none', font='Arial, 8', relief = GROOVE, borderwidth=2)
-T_destination.pack(padx=2, side = LEFT)
+F_settings_L2 = Frame(F_settings, width = 275, height = 25)
+F_settings_L2.pack()
+F_settings_L2.pack_propagate(0)
+
+T_destination = Text(F_settings_L1, height=1, width=45, wrap='none', font='Arial, 8', relief = GROOVE, borderwidth=2)
+T_destination.pack()
 T_destination.insert(END, destination)
 T_destination.config(state=DISABLED)
 
-open_gif = PhotoImage(file = 'img/open.gif')
+change_png = PhotoImage(file = 'img/change.png')
+B_destination = Button(F_settings_L2, image = change_png, text = 'Changer la destination', compound='left', command = Destination)
+B_destination.pack(side = LEFT)
 
-B_open = Button(F_settings, image = open_gif, command = OpenFolder)
+open_png = PhotoImage(file = 'img/open.png')
+B_open = Button(F_settings_L2, image = open_png, text = 'Ouvrir le dossier', compound='left', command = OpenFolder)
 B_open.pack(side = RIGHT)
-
-B_destination = Button(F_settings, text = 'Parcourir', command = Destination)
-B_destination.pack(side = RIGHT)
 
 #Copy
 M_copy = Menu(T_destination, tearoff=0)
@@ -249,21 +254,29 @@ T_destination.bind("<Button-3>", PopCopy)
 LF1 = LabelFrame(window, text='Par dossier')
 LF1.pack(fill='both', expand='yes', padx=10, pady=5)
 
-L1 = Label(LF1, text='Choisissez le dossier à traiter')
-L1.pack(padx=10, pady=10, side = LEFT)
+F_Dossier = Frame(LF1, width = 275, height = 45)
+F_Dossier.pack()
+F_Dossier.pack_propagate(0)
 
-Bouton1 = Button(LF1, text = 'Parcourir', command = ParDossier)
-Bouton1.pack(padx=10, pady=10, side = RIGHT)
+L1 = Label(F_Dossier, text='Choisissez le dossier à traiter')
+L1.pack(side = LEFT)
+
+Bouton1 = Button(F_Dossier, text = 'Parcourir...', command = ParDossier)
+Bouton1.pack(side = RIGHT)
 
 #Par fichier(s)
 LF2 = LabelFrame(window, text='Par fichier(s)')
 LF2.pack(fill='both', expand='yes', padx=10, pady=5)
 
-L2 = Label(LF2, text='Choisissez le(s) fichier(s) à traiter')
-L2.pack(padx=10, pady=10, side = LEFT)
+F_Fichiers = Frame(LF2, width = 275, height = 45)
+F_Fichiers.pack()
+F_Fichiers.pack_propagate(0)
 
-Bouton2 = Button(LF2, text = 'Parcourir', command = ParFichiers)
-Bouton2.pack(padx=10, pady=10, side = RIGHT)
+L2 = Label(F_Fichiers, text='Choisissez le(s) fichier(s) à traiter')
+L2.pack(side = LEFT)
+
+Bouton2 = Button(F_Fichiers, text = 'Parcourir...', command = ParFichiers)
+Bouton2.pack(side = RIGHT)
 
 #Fenêtre loop
 window.mainloop()
