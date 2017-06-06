@@ -217,34 +217,27 @@ canvas.create_image(0, 20, anchor=NW, image=logo)
 canvas.pack()
 
 #Par amètres (la bonne blague)
-LF_settings = LabelFrame(window, text='Paramètres')
+LF_settings = LabelFrame(window, text='Destination de sortie')
 LF_settings.pack(fill='both', expand='yes', padx=10, pady=10)
 
 F_settings = Frame(LF_settings)
 F_settings.pack(pady=5)
 
-F_settings_L1 = Frame(F_settings, width = 277, height=24)
-F_settings_L1.pack(pady=5)
-F_settings_L1.pack_propagate(0)
+F_settings = Frame(F_settings, width = 277, height=24)
+F_settings.pack(pady=5)
+F_settings.pack_propagate(0)
 
-F_settings_L2 = Frame(F_settings, width = 277, height=25)
-F_settings_L2.pack(pady=5)
-F_settings_L2.pack_propagate(0)
-
-T_destination = Text(F_settings_L1, height=1, width=40, wrap='none', font='Arial, 8', relief = GROOVE, borderwidth=2)
+T_destination = Text(F_settings, height=1, width=30, wrap='none', font='Arial, 8', relief = GROOVE, borderwidth=2)
 T_destination.pack(padx=2, side = LEFT)
 T_destination.insert(END, destination)
 T_destination.config(state=DISABLED)
 
 open_gif = PhotoImage(file = 'img/open.gif')
 
-B_open = Button(F_settings_L1, image = open_gif, command = OpenFolder)
+B_open = Button(F_settings, image = open_gif, command = OpenFolder)
 B_open.pack(side = RIGHT)
 
-L_destination = Label(F_settings_L2, text='Destination de sortie')
-L_destination.pack(side = LEFT)
-
-B_destination = Button(F_settings_L2, text = 'Parcourir...', command = Destination)
+B_destination = Button(F_settings, text = 'Parcourir', command = Destination)
 B_destination.pack(side = RIGHT)
 
 #Copy
@@ -259,7 +252,7 @@ LF1.pack(fill='both', expand='yes', padx=10, pady=5)
 L1 = Label(LF1, text='Choisissez le dossier à traiter')
 L1.pack(padx=10, pady=10, side = LEFT)
 
-Bouton1 = Button(LF1, text = 'Parcourir...', command = ParDossier)
+Bouton1 = Button(LF1, text = 'Parcourir', command = ParDossier)
 Bouton1.pack(padx=10, pady=10, side = RIGHT)
 
 #Par fichier(s)
@@ -269,7 +262,7 @@ LF2.pack(fill='both', expand='yes', padx=10, pady=5)
 L2 = Label(LF2, text='Choisissez le(s) fichier(s) à traiter')
 L2.pack(padx=10, pady=10, side = LEFT)
 
-Bouton2 = Button(LF2, text = 'Parcourir...', command = ParFichiers)
+Bouton2 = Button(LF2, text = 'Parcourir', command = ParFichiers)
 Bouton2.pack(padx=10, pady=10, side = RIGHT)
 
 #Fenêtre loop
